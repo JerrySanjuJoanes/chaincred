@@ -109,20 +109,20 @@ class ContributionWeightedScorer:
         
         return capped_score, tier, reason
     
-    def score_skill(self, skill: str, evidence: Dict, contribution_pct: float) -> Dict:
+    def score_skill(self, skill: str, evidence: Dict, contribution_pct: float, heuristic_score: Dict = None) -> Dict:
         """
-        Calculate complete skill score with evidence and explanation.
-        
-        Args:
-            skill: Skill name
-            evidence: Evidence dictionary
-            contribution_pct: User's contribution percentage
-            
-        Returns:
-            Dictionary with score, evidence, tier, and explanation
+        Calculate complete skill score with contribution-based capping.
+        If a heuristic_score is provided, use it as the base; otherwise
+        fall back to evidence-based scoring.
         """
-        # Calculate base score
-        base_score = self.calculate_base_score(evidence)
+        if heuristic_score:
+            base_score = heuristic_score.get('base_score', 0)
+            breakdown = heuristic_score.get('breakdown', [])
+            scoring_source = heuristic_score.get('source', 'heuristic')
+        else:
+            base_score = self.calculate_base_score(evidence)
+            breakdown = []
+            scoring_source = 'evidence'
         
         # Apply contribution cap
         final_score, tier, reason = self.apply_contribution_cap(base_score, contribution_pct)
@@ -143,7 +143,9 @@ class ContributionWeightedScorer:
             'evidence': evidence,
             'files_count': len(evidence.get('files', [])),
             'imports_count': len(evidence.get('imports', [])),
-            'patterns_count': len(evidence.get('patterns', []))
+            'patterns_count': len(evidence.get('patterns', [])),
+            'breakdown': breakdown,
+            'scoring_source': scoring_source
         }
     
     def aggregate_scores(self, repo_scores: List[Dict]) -> Dict:

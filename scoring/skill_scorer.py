@@ -6,7 +6,7 @@ from pathlib import Path
 from code_analysis.language_detector import detect_frameworks
 from code_analysis.structure import count_django_apps
 from code_analysis.complexity import calculate_complexity
-from utils import calculate_authorship_percentage, validate_skill_breakdown
+from shared.utils import calculate_authorship_percentage, validate_skill_breakdown
 import os
 import re
 

@@ -11,7 +11,7 @@ from code_analysis.structure import analyze_structure
 from code_analysis.complexity import calculate_complexity
 from code_analysis.lint_metrics import analyze_code_quality
 from code_analysis.test_detector import detect_tests
-from utils import is_bot_user, AnalysisWarnings
+from shared.utils import is_bot_user, AnalysisWarnings
 
 
 def analyze_repository(repo_path: str) -> Tuple[Dict, int, Set, Dict, Dict, AnalysisWarnings]:

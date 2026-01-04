@@ -2,8 +2,9 @@
 Display utilities for resume-based analysis results with skill verification.
 """
 from typing import Dict, List
-from skill_detector import SkillDetector
-from contribution_scorer import ContributionWeightedScorer
+from scoring.skill_detector import SkillDetector
+from scoring.contribution_scorer import ContributionWeightedScorer
+from scoring.heuristics_adapter import get_heuristic_score
 
 
 def get_confidence_label(contribution_pct: float) -> str:
@@ -155,7 +156,8 @@ def display_resume_results(resume_data: Dict, repo_results: List[Dict]) -> None:
             print(f"   📊 Skill Scores (contribution-weighted):")
             
             for skill, evidence in detected_skills.items():
-                score_data = scorer.score_skill(skill, evidence, contribution_pct)
+                heuristic = get_heuristic_score(skill, repo_path, stats)
+                score_data = scorer.score_skill(skill, evidence, contribution_pct, heuristic_score=heuristic)
                 
                 # Store for aggregation
                 if skill not in skill_repo_scores:
